@@ -63,6 +63,7 @@ class TestPlaylist:
         #show the logger message in JSON format:
         LOGGER.info("Response to get all messages(JSON): %s", json.dumps(messages, indent=2))
         assert res.status == 200, "Response code is not 200"
+        LOGGER.debug("Status code: %s", res.status)
         assert isinstance(messages, list), "Response content is not a list of messages"
 
     def test_get_message(self):
@@ -75,6 +76,7 @@ class TestPlaylist:
         message = json.loads(data.decode("utf-8"))
         LOGGER.debug("Response to get message: %s", message)
         assert res.status == 200, "Response code is not 200"
+        LOGGER.debug("Status code: %s", res.status)
         assert isinstance(message, dict), "Response content is not a message"
 
         
@@ -88,6 +90,7 @@ class TestPlaylist:
         count = json.loads(data.decode("utf-8"))
         LOGGER.debug("Response to count messages: %s", count)
         assert res.status == 200, "Response code is not 200"
+        LOGGER.debug("Status code: %s", res.status)
         
     def test_move_message(self):
         """
@@ -103,6 +106,7 @@ class TestPlaylist:
         LOGGER.debug("Response to move message: %s", message)
         LOGGER.info("The message ID: %s,  received from: %s, with the Subject: %s, was moved to the folder: %s", self.message_id, message_sender, message_subject, folder_moved)
         assert res.status == 200, "Response code is not 200"
+        LOGGER.debug("Status code: %s", res.status)
         assert isinstance(message, dict), "Response content is not a message"
 
 
@@ -152,7 +156,20 @@ class TestPlaylist:
 
         LOGGER.info("The email from %s was received at %s", FROM_ADDRESS, result)
 
-        LOGGER.debug("Mail received: %s", result)
+        LOGGER.debug("Mail received: %s", result)   
+
+    def test_delete_message(self):
+        """
+        Test Delete Message
+        """
+        self.conn.request("DELETE", f"/api/addresses/{self.email}/messages/{self.message_id}", headers=self.headers)
+        res = self.conn.getresponse()
+        data = res.read()
+        message = json.loads(data.decode("utf-8"))
+        LOGGER.debug("Response to delete message ID: %s %s", self.message_id, message)
+        assert res.status == 200, "Response code is not 200"
+        LOGGER.debug("Status code: %s", res.status)
+
     
                                         
 
