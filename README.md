@@ -43,3 +43,5 @@ python-dotenv
   An Office365 email credentials has been used to create a new email message, Mailsac code only confirm its received
 
   The code has a 30 seconds delay when you run it.
+
+  python -m pytest test_messages.py
