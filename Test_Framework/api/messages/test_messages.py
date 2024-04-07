@@ -34,6 +34,8 @@ SMTP_USERNAME = os.getenv('SMTP_USERNAME')
 SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
 
 my_id = None
+#message_id = None
+
 
 class TestPlaylist:
 
@@ -48,8 +50,13 @@ class TestPlaylist:
         cls.conn.request("GET", f"/api/addresses/{cls.email}/messages", headers=cls.headers)
         res = cls.conn.getresponse()
         data = res.read()
-        cls.message_id = json.loads(data.decode("utf-8"))[0]["_id"]
-        LOGGER.debug("Message ID: %s", cls.message_id)
+        messages = json.loads(data.decode("utf-8"))
+        if messages:  # Check if the list is not empty
+            cls.message_id = messages[0]["_id"]
+            LOGGER.debug("Message ID: %s", cls.message_id)
+        else:
+            LOGGER.error("No messages found.")
+
 
     def test_get_all_messages(self):
         """
@@ -117,7 +124,6 @@ class TestPlaylist:
         BODY_TEXT = ("Mailsac SMTP Validate Email Send\r\n"
                      "This email was sent using an OFFICE365 email."
                      )
-        # Create message container - the correct MIME type is multipart/alternative.
         msg = MIMEMultipart()
         msg['From'] = FROM_ADDRESS
         msg['To'] = TO_ADDRESS
@@ -134,7 +140,7 @@ class TestPlaylist:
             text = msg.as_string()
             server.sendmail(FROM_ADDRESS, TO_ADDRESS, text)
             server.quit()
-            print("Email sent successfully!")
+            LOGGER.info("Email sent successfully!")
         except Exception as e:
             print("Error: unable to send email -", e)
             raise e
@@ -144,10 +150,10 @@ class TestPlaylist:
     def check_received(receive_address, send_address, base_url, headers):
         api_url = '{0}/addresses/{1}/messages'.format(base_url, receive_address)
         response = requests.get(api_url, headers=headers)
-        LOGGER.debug("***************************************Response to check received: %s", response.json())
+        LOGGER.debug("Response to create message: %s", response.json())
         data = response.json()
         my_id = data[0]['_id']
-        LOGGER.debug("***************************************MSG ID IS: %s", my_id)
+        LOGGER.debug("Message ID is: %s", my_id)
         for message in response.json():
             if message['from'][0]['address'] == send_address:
                 return message['received']
@@ -156,10 +162,7 @@ class TestPlaylist:
     def test_check_received(self):
         result = self.check_received('bocacha@mailsac.com', send_address=FROM_ADDRESS,
                                      base_url=BASE_URL, headers={'Mailsac-Key': API_TOKEN})
-        #Logger must detail the email sender, the message id and the time the email was received:
-
         LOGGER.info("The email from %s was received at %s", FROM_ADDRESS, result)
-
         LOGGER.debug("Mail received: %s", result)   
 
     def test_delete_message(self,create_message):
@@ -174,10 +177,30 @@ class TestPlaylist:
         data = res.read()
         message = json.loads(data.decode("utf-8"))
         LOGGER.debug("Response to delete message:%s", message)
-        # assert res.status == 200, "Response code is not 200"
-        # LOGGER.debug("Status code: %s", res.status)
+        assert res.status == 200, "Response code is not 200"
+        LOGGER.debug("Status code: %s", res.status)
 
-    
+    @classmethod
+    def teardown_class(cls):
+        """
+        Teardown Class is called after the class is completed
+        """
+        cls.conn.close()
+        LOGGER.debug("Clean up messages")
+        cls.conn = http.client.HTTPSConnection("mailsac.com")
+        cls.headers = { 'Mailsac-Key': key}
+        cls.email = email
+        cls.conn.request("GET", f"/api/addresses/{cls.email}/messages", headers=cls.headers)
+        res = cls.conn.getresponse()
+        data = res.read()
+        messages = json.loads(data.decode("utf-8"))
+        for message in messages:
+            cls.conn.request("DELETE", f"/api/addresses/{cls.email}/messages/{message['_id']}", headers=cls.headers)
+            res = cls.conn.getresponse()
+            data = res.read()
+            message = json.loads(data.decode("utf-8"))
+            LOGGER.debug("Response to delete message: %s", message)
+        LOGGER.info("Test completed")
                                         
 
 
