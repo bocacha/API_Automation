@@ -8,6 +8,7 @@ import logging
 import pytest
 
 from Test_Framework.api.messages.test_messages import TestPlaylist
+TestPlaylist.setup_class()
 
 LOGGER = logging.getLogger(__name__)
 

@@ -12,6 +12,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from dotenv import load_dotenv
+
+from Test_Framework.helpers.restClient import RestClient
 from ...utils.logger import get_logger
 
 LOGGER = get_logger(__name__, logging.DEBUG)
