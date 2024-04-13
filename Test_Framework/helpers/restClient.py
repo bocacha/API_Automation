@@ -1,4 +1,6 @@
 import json
+import os
+from dotenv import load_dotenv
 import requests
 import logging
 
@@ -6,8 +8,12 @@ import logging
 
 from ..utils.logger import get_logger
 
+load_dotenv()
 
-HEADER = { 'Mailsac-Key': 'k_pZ2lvXIuAkvoXBi4bBm99w7djLFLkEeunR6fImwwd4'}
+key = os.getenv("KEY")
+
+
+HEADER = { 'Mailsac-Key': key}
 LOGGER = logging.getLogger(__name__)
 
 class RestClient:

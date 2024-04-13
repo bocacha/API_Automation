@@ -51,6 +51,7 @@ class TestAdresses:
         """
         Setup Class is called before the class is initiated
         """
+        cls.rest_client = RestClient()
         cls.conn = http.client.HTTPSConnection("mailsac.com")
         cls.headers = { 'Mailsac-Key': key}
         cls.email = email
@@ -73,6 +74,42 @@ class TestAdresses:
         res = self.conn.getresponse()
         data = res.read()
         addresses = json.loads(data.decode("utf-8"))
-        LOGGER.debug("Addresses: %s", addresses)
+        LOGGER.debug("Response to get all owned addresses: %s", addresses)
         assert res.status == 200
         
+    def test_get_address(self):
+        """
+        Test Get Address
+        """
+        self.conn.request("GET", f"/api/addresses/{self.address_id}", headers=self.headers)
+        res = self.conn.getresponse()
+        data = res.read()
+        address = json.loads(data.decode("utf-8"))
+        LOGGER.debug("Response to check if owned an address: %s", address)
+        assert res.status == 200
+
+    #Create a new owned address will fail since this API request we pay for create more than 1 address
+    #Thats why we will get a 400 status code
+    def test_create_address(self):
+        """
+        Test Create Address
+        """
+        self.conn.request("POST", f"/api/addresses/bocacha2@mailsac.com", headers=self.headers)
+        res = self.conn.getresponse()
+        data = res.read()
+        address = json.loads(data.decode("utf-8"))
+        LOGGER.debug("Response to create an address: %s", address)
+        assert res.status == 400
+
+    #This code will delete the the owned property of the address
+    def test_delete_address(self):
+        """
+        Test Delete Address
+        """
+        self.conn.request("DELETE", f"/api/addresses/{self.address_id}", headers=self.headers)
+        res = self.conn.getresponse()
+        data = res.read()
+        address = json.loads(data.decode("utf-8"))
+        LOGGER.debug("Response to delete an address: %s", address)
+        assert res.status == 200
+

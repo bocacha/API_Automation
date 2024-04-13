@@ -1,0 +1,82 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/messages"
+    },
+    "response": {
+        "body": [
+            {
+              "_id": "a2vmH2HAW2ggRqIyePe_2xmoFI-0",
+              "from": [
+                {
+                  "address": "martineduardogonzalez@gmail.com",
+                  "name": "Martin Gonzalez"
+                }
+              ],
+              "to": [
+                {
+                  "address": "bocacha@mailsac.com",
+                  "name": ""
+                }
+              ],
+              "cc": [],
+              "bcc": [],
+              "subject": "segundo test",
+              "savedBy": null,
+              "inbox": "bocacha@mailsac.com",
+              "originalInbox": "bocacha@mailsac.com",
+              "domain": "mailsac.com",
+              "received": "2024-04-13T13:40:34.495Z",
+              "size": 2819,
+              "attachments": [],
+              "ip": "209.85.160.49",
+              "via": "172.31.35.201",
+              "folder": "inbox",
+              "labels": [],
+              "read": null,
+              "rtls": true,
+              "links": [],
+              "spam": 0
+            },
+            {
+              "_id": "9shmFmFI64UircFQ6MsKDCg3p2voG-0",
+              "from": [
+                {
+                  "address": "martineduardogonzalez@gmail.com",
+                  "name": "Martin Gonzalez"
+                }
+              ],
+              "to": [
+                {
+                  "address": "bocacha@mailsac.com",
+                  "name": ""
+                }
+              ],
+              "cc": [],
+              "bcc": [],
+              "subject": "test sabado",
+              "savedBy": null,
+              "inbox": "bocacha@mailsac.com",
+              "originalInbox": "bocacha@mailsac.com",
+              "domain": "mailsac.com",
+              "received": "2024-04-13T13:40:21.028Z",
+              "size": 2817,
+              "attachments": [],
+              "ip": "209.85.161.47",
+              "via": "172.31.16.150",
+              "folder": "inbox",
+              "labels": [],
+              "read": null,
+              "rtls": true,
+              "links": [],
+              "spam": 0
+            }
+        ]   
+    },
+    "headers": {
+            "Content-Type": "application/json"
+    },
+    "status_code": 200
+    
+}
+
