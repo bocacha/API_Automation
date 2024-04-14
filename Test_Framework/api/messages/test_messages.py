@@ -61,7 +61,7 @@ class TestPlaylist:
         else:
             LOGGER.error("No messages found.")
         cls.validate = ValidateResponse()
-        cls.project = Project()
+ 
 
     def test_get_all_messages(self):
         """
@@ -77,7 +77,7 @@ class TestPlaylist:
         assert res.status == 200, "Response code is not 200"
         LOGGER.debug("Status code: %s", res.status)
         assert isinstance(messages, list), "Response content is not a list of messages"
-        self.validate.validate_response(actual_response=messages, endpoint='/messages', file_name='get_all_messages')
+        self.validate.validate_response(actual_response=messages, file_name='get_all_messages')
 
 
     def test_get_message(self):

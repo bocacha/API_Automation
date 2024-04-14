@@ -7,8 +7,8 @@ import time
 import logging
 import pytest
 
-from Test_Framework.api.messages.test_messages import TestPlaylist
-TestPlaylist.setup_class()
+# from Test_Framework.api.messages.test_messages import TestPlaylist
+# TestPlaylist.setup_class()
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,7 +36,9 @@ def create_message():
     msg.attach(MIMEText(BODY_TEXT, 'plain'))
 
     try:        
+        # Connect to SMTP server and send email      
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.connect(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(SMTP_USERNAME, SMTP_PASSWORD)
         text = msg.as_string()
@@ -51,7 +53,12 @@ def create_message():
     api_url = f'{BASE_URL}addresses/{TO_ADDRESS}/messages'
     response = requests.get(api_url, headers=headers)
     data = response.json()
-    global message_id
+    if data:
+        message_id = data[0]['_id']
+        LOGGER.debug(f"Message ID: {message_id}")
+    else:
+        LOGGER.error("No data found in response")
+    #global message_id
     message_id = data[0]['_id']
     LOGGER.debug(f"Message ID: {message_id}")
     return message_id
