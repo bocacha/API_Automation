@@ -44,4 +44,8 @@ python-dotenv
 
   The code has a 30 seconds delay when you run it.
 
-  python -m pytest test_messages.py
+- Class method "setup_class" has been modify to actually send an email, so get_all_messages & get message wont fails.
+
+- Fixture "create_message" has been implemented on test_delete_message method
+
+- Validation has been implemented on "test_get_message" method
