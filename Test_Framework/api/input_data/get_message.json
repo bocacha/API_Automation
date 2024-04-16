@@ -1,0 +1,28 @@
+{
+    "_id": "c7wfLi1tW0BXgw11UhLtMtwM-0", 
+    "from": [{"address": "ses.ats@outlook.com", 
+             "name": ""
+        }],
+    "to": [{"address": "bocacha@mailsac.com", 
+            "name": ""
+        }], 
+    "cc": [], 
+    "bcc": [], 
+    "subject": 
+    "FROM test_create_message Validate Email Send", 
+    "savedBy": "None", 
+    "inbox": "bocacha@mailsac.com", 
+    "originalInbox": "bocacha@mailsac.com", 
+    "domain": "mailsac.com", 
+    "received": "2024-04-15T23:33:26.701Z", 
+    "size": 6566, 
+    "attachments": [], 
+    "ip": "40.92.42.50", 
+    "via": "172.31.16.150", 
+    "folder": "inbox", 
+    "labels": [], 
+    "read": "None",
+    "rtls": "True", 
+    "links": [], 
+    "spam": 0
+}

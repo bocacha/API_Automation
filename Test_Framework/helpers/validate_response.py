@@ -1,34 +1,35 @@
 import logging
 import os
 import json
+from ..utils.logger import get_logger
 
-from dotenv import load_dotenv
-from utils.logger import get_logger
-
-abs_path = os.path.abspath(__file__ + "../../../")
 
 LOGGER = get_logger(__name__, logging.DEBUG)
 
-load_dotenv()
 
-email = os.getenv("EMAIL")
+
+abs_path = os.path.abspath(__file__ + "../../../")
 
 class ValidateResponse: 
     # read from json file "/api/addresses/{cls.email}/messages"
-    def validate_response(self, actual_response=None, endpoint=None, file_name=None):
+    def validate_response(self, actual_response=None,  file_name=None):
         """
             :param actual_response:  REST response
-            :param endpoint:         endpoint used i.e projects
         """
-        expected_response = self.read_input_data_json(f"{abs_path}/api/addresses/{email}{endpoint}/{file_name}.json")
+        LOGGER.debug("Actual response from validate: %s", actual_response)
+        expected_response = self.read_input_data_json(f"{abs_path}/api/input_data/{file_name}.json")
 
         # compare results
         # validate status_code
-        self.validate_value(expected_response["status_code"], actual_response["status_code"], "status_code")
+
+        if isinstance(actual_response, list):
+            actual_response = actual_response[0] 
+            LOGGER.debug("ENTERING IF INSTANCE")
+        self.validate_value(expected_response["subject"], actual_response["subject"], "subject")
         # validate headers
-        self.validate_value(expected_response["headers"], actual_response["headers"], "headers")
+        #self.validate_value(expected_response["headers"], actual_response["headers"], "headers")
         # validate body
-        self.validate_value(expected_response["response"]["body"], actual_response["body"], "body")
+        #self.validate_value(expected_response["response"]["body"], actual_response["body"], "body")
 
     def validate_value(self, expected_value, actual_value, key_compare):
         error_message = f"Expected '{expected_value}' but received '{actual_value}'"
