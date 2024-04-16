@@ -44,7 +44,7 @@ def create_message():
         text = msg.as_string()
         server.sendmail(FROM_ADDRESS, TO_ADDRESS, text)
         server.quit()
-        LOGGER.info("Email sent successfully!")
+        LOGGER.info("Email sent from fixture")
     except Exception as e:
         LOGGER.error(f"Error sending email: {e}")
     

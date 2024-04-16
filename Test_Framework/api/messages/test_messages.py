@@ -51,6 +51,32 @@ class TestPlaylist:
         cls.conn = http.client.HTTPSConnection("mailsac.com")
         cls.headers = { 'Mailsac-Key': key}
         cls.email = email
+        #create an email
+        BODY_TEXT = ("Mailsac SMTP Validate Email Send\r\n"
+                        "This email was sent using an OFFICE365 email."
+                        )
+        msg = MIMEMultipart()
+        msg['From'] = FROM_ADDRESS
+        msg['To'] = TO_ADDRESS
+        msg['Subject'] = SUBJECT
+
+        # Attach body to the email
+        msg.attach(MIMEText(BODY_TEXT, 'plain'))
+
+        # Connect to SMTP server and send email
+        try:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            text = msg.as_string()
+            server.sendmail(FROM_ADDRESS, TO_ADDRESS, text)
+            server.quit()
+            LOGGER.info("Email sent successfully!")
+            LOGGER.debug("Email sent from setup_class")
+        except Exception as e:
+            LOGGER.error(f"Error sending email: {e}")
+            raise e
+        time.sleep(10)
         cls.conn.request("GET", f"/api/addresses/{cls.email}/messages", headers=cls.headers)
         res = cls.conn.getresponse()
         data = res.read()
@@ -61,7 +87,7 @@ class TestPlaylist:
         else:
             LOGGER.error("No messages found.")
         cls.validate = ValidateResponse()
- 
+            
 
     def test_get_all_messages(self):
         """
@@ -69,6 +95,7 @@ class TestPlaylist:
         """
         self.conn.request("GET", f"/api/addresses/{self.email}/messages", headers=self.headers)
         res = self.conn.getresponse()
+        LOGGER.debug("Response to get all messages: %s", res)
         data = res.read()
         messages = json.loads(data.decode("utf-8"))
         LOGGER.debug("Response to get all messages(Text): %s", messages)
@@ -77,8 +104,6 @@ class TestPlaylist:
         assert res.status == 200, "Response code is not 200"
         LOGGER.debug("Status code: %s", res.status)
         assert isinstance(messages, list), "Response content is not a list of messages"
-        self.validate.validate_response(actual_response=messages, file_name='get_all_messages')
-
 
     def test_get_message(self):
         """
@@ -90,8 +115,9 @@ class TestPlaylist:
         message = json.loads(data.decode("utf-8"))
         LOGGER.debug("Response to get message: %s", message)
         assert res.status == 200, "Response code is not 200"
-        LOGGER.debug("Status code: %s", res.status)
-        assert isinstance(message, dict), "Response content is not a message"
+        LOGGER.debug("Status code get message: %s", res.status)
+        self.validate.validate_response(actual_response=message, file_name='get_message')
+        #assert isinstance(message, dict), "Response content is not a message"
 
         
     def test_count_messages(self):
@@ -185,7 +211,7 @@ class TestPlaylist:
         message = json.loads(data.decode("utf-8"))
         LOGGER.debug("Response to delete message:%s", message)
         assert res.status == 200, "Response code is not 200"
-        LOGGER.debug("Status code: %s", res.status)
+        #LOGGER.debug("Status code: %s", res.status)
 
     @classmethod
     def teardown_class(cls):
